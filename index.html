@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TFA Packs — Pro</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070b13; --grad1:#121a2a; --grad2:#0b1222; --ink:#e8f0ff; --muted:#9fb2d7;
+  --chip:#1c2742; --accent:#6cf0ff; --accent2:#7b5cff; --good:#00dda2; --warn:#ffd257; --danger:#ff5c7a;
+  --glass:rgba(255,255,255,.06); --ring:#2b395c; --card:#0e1627; --shadow:0 10px 30px rgba(0,0,0,.45);
+  --gold:#ffd257; --silver:#b9c7d6; --bronze:#a87a55; --hero:#ff3b6a; --icon:#f7f3e8; --toty:#2b5bff; --tots:#00c8a3;
+}
+*{box-sizing:border-box} html,body{height:100%}
+body{margin:0;font-family:'Outfit',system-ui,Segoe UI,Roboto,Helvetica,Arial;background:
+  radial-gradient(1200px 600px at 80% -10%, #111a33 0%, transparent 60%),
+  radial-gradient(900px 500px at -10% 10%, #0b162f 0%, transparent 50%),
+  linear-gradient(180deg, var(--grad1), var(--grad2)); color:var(--ink); -webkit-font-smoothing:antialiased}
+.app{max-width:980px;margin:0 auto;padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom)}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px;border-radius:18px;background:var(--glass);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow)}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:36px;height:36px;border-radius:10px;background:conic-gradient(from 210deg at 50% 50%, #7b5cff, #00e0ff, #7b5cff);box-shadow:0 0 22px rgba(124,92,255,.45), inset 0 0 10px rgba(255,255,255,.15)}
+.brand h1{font-size:18px;margin:0 0 -2px 0;font-weight:700}.sub{font-size:12px;color:var(--muted);letter-spacing:.2px}
+.kpis{display:flex;gap:10px;align-items:center}
+.kpi{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.08);font-weight:600}
+.kpi .coin{width:20px;height:20px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #fff, #bbc7d7 40%, #94a3ba 70%); box-shadow:inset 0 2px 3px rgba(0,0,0,.25)}
+.btn{appearance:none;border:0;cursor:pointer;color:var(--ink);background:#1c2742;padding:10px 14px;border-radius:12px;font-weight:600}
+.btn.primary{background:linear-gradient(90deg, var(--accent), var(--accent2)); color:#00131c}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.12)}
+.hero{margin:16px 0;padding:18px;border-radius:22px;background:
+ linear-gradient(135deg, rgba(123,92,255,.25),rgba(108,240,255,.18)),
+ url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="%2300e0ff"/><stop offset="1" stop-color="%237b5cff"/></linearGradient></defs><g fill="none" stroke="url(%23g)" stroke-opacity=".35"><path d="M0 280C120 220 240 220 360 260s240 40 360 0 240-60 360-20" stroke-width="2"/></g></svg>') center/cover no-repeat;
+ border:1px solid rgba(255,255,255,.10); box-shadow:var(--shadow); display:flex; justify-content:space-between; align-items:center; gap:12px; position:relative; overflow:hidden}
+.hero .copy{max-width:66%}.hero h2{margin:0 0 6px;font-size:26px;letter-spacing:.2px}.hero p{margin:0;color:var(--muted)}.hero .cta{display:flex;gap:10px;margin-top:12px}
+.hero .flare{position:absolute;inset:-40px -80px auto auto;width:320px;height:320px;filter:blur(30px);background:conic-gradient(from 90deg, rgba(255,255,255,0), rgba(124,92,255,.35), rgba(0,224,255,.35), rgba(255,255,255,0));border-radius:50%}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tile{border-radius:18px;padding:18px;min-height:120px;background:var(--card);border:1px solid var(--ring);box-shadow:var(--shadow);position:relative;overflow:hidden;cursor:pointer;transition:transform .15s ease}
+.tile:active{transform:scale(.98)} .tile h3{margin:0 0 6px;font-size:18px}
+.tag{position:absolute;top:12px;right:12px;font-size:12px;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
+.tile .hint{color:var(--muted);font-size:13px} .tile.gradient{background:linear-gradient(135deg, rgba(124,92,255,.18), rgba(0,224,255,.12), rgba(255,255,255,.02))}
+.tabs{display:flex;gap:8px;margin:12px 0 16px}.tab{padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);cursor:pointer;font-weight:600;color:var(--muted)}
+.tab.active{background:linear-gradient(90deg, var(--accent), var(--accent2)); color:#00131c}
+.list{display:grid;gap:10px}
+.pack{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12)}
+.pack .pill{font-size:12px;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);margin-right:6px}
+.pack .price{font-weight:800}.pack .buy{padding:10px 14px;border-radius:12px;background:linear-gradient(90deg, var(--accent), var(--accent2));color:#00131c;border:0;font-weight:800;cursor:pointer}
+.overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.8);z-index:40}
+.overlay.show{display:flex}.flash{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity .16s ease}.flash.show{opacity:.85}
+.reveal{width:min(920px,96%);max-height:90vh;overflow:auto;background:var(--card);border:1px solid var(--ring);border-radius:20px;padding:16px;box-shadow:var(--shadow)}
+.card{margin:10px 0;padding:14px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.10)}
+.card .row{display:flex;align-items:center;flex-wrap:wrap;gap:8px}.card .ovr{font-size:28px;font-weight:900;margin-right:12px}
+.badge{font-size:12px;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10)}
+.qs{margin-left:auto}.closeX{position:fixed;top:18px;right:18px;z-index:60}
+.nav{position:sticky;bottom:0;margin-top:18px;display:flex;gap:10px;justify-content:space-between}.nav .btn{flex:1;text-align:center}
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);z-index:50}
+.modal.show{display:flex}.sheet{width:min(560px,96%);background:var(--card);border:1px solid var(--ring);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+.sheet .head{display:flex;align-items:center;gap:10px}.sheet .big{font-size:46px;font-weight:900}.small{font-size:13px;color:var(--muted)}
+.r-bronze{box-shadow:0 0 0 2px var(--bronze) inset}.r-silver{box-shadow:0 0 0 2px var(--silver) inset}.r-gold{box-shadow:0 0 0 2px var(--gold) inset}
+.r-hero{box-shadow:0 0 0 2px var(--hero) inset}.r-icon{box-shadow:0 0 0 2px var(--icon) inset}.r-toty{box-shadow:0 0 0 2px var(--toty) inset}.r-tots{box-shadow:0 0 0 2px var(--tots) inset}
+@media(min-width:820px){.grid{grid-template-columns:repeat(4,1fr)}.tile{min-height:140px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <h1 style="margin:0">TFA Packs — <span style="font-weight:800;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent">Pro</span></h1>
+        <div class="sub">Draft & Packs • Neon</div>
+      </div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="coin"></div><span id="coins">0</span></div>
+      <button class="btn ghost" id="gift">Daily +100k</button>
+      <button class="btn primary" id="profileBtn">Profile</button>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="copy">
+      <h2>Build the ultimate club.</h2>
+      <p>Open premium packs with full‑screen flashes, complete SBCs, and grow your collection. Admin tools included.</p>
+      <div class="cta">
+        <button class="btn primary" onclick="go('store')">Open Store</button>
+        <button class="btn" onclick="go('club')">My Club</button>
+      </div>
+    </div>
+    <div class="flare"></div>
+  </section>
+
+  <div class="grid" id="homeGrid">
+    <div class="tile gradient" onclick="go('store')">
+      <span class="tag">NEW</span>
+      <h3>Packs</h3>
+      <div class="hint">Store & My Packs</div>
+    </div>
+    <div class="tile" onclick="go('club')">
+      <h3>Club</h3><div class="hint">Your players & quick sell</div>
+    </div>
+    <div class="tile" onclick="go('sbc')"><h3>SBC</h3><div class="hint">Submit squads • earn packs</div></div>
+    <div class="tile" onclick="go('info')"><h3>Info / Admin</h3><div class="hint">Import players • edit packs</div></div>
+  </div>
+
+  <!-- STORE -->
+  <section id="store" style="display:none">
+    <div class="tabs">
+      <div class="tab active" id="tab-store" onclick="switchStore('store')">Store Packs</div>
+      <div class="tab" id="tab-mine" onclick="switchStore('mine')">My Packs <span id="myCount" class="badge" style="margin-left:6px">0</span></div>
+    </div>
+    <div id="storeList" class="list"></div>
+    <div id="mineList" class="list" style="display:none"></div>
+  </section>
+
+  <!-- CLUB -->
+  <section id="club" style="display:none">
+    <div class="tabs"><div class="tab active">My Club</div></div>
+    <div id="clubList" class="list"></div>
+  </section>
+
+  <!-- SBC -->
+  <section id="sbc" style="display:none">
+    <div class="tabs"><div class="tab active">SBCs</div></div>
+    <div class="list" id="sbcList"></div>
+  </section>
+
+  <!-- INFO / ADMIN -->
+  <section id="info" style="display:none" class="admin">
+    <div class="tabs">
+      <div class="tab active" onclick="adminTab('leagues')">Leagues & Players</div>
+      <div class="tab" onclick="adminTab('packs')">Packs</div>
+      <div class="tab" onclick="adminTab('cards')">Card Types</div>
+      <div class="tab" onclick="adminTab('sim')">Simulator</div>
+      <div class="tab" onclick="adminTab('save')">Save</div>
+    </div>
+    <div id="admin-leagues">
+      <div class="row">
+        <select id="leagueSel" class="btn ghost"></select>
+        <button class="btn" onclick="addLeaguePrompt()">+ Add League</button>
+        <button class="btn" onclick="exportLeague()">Export league</button>
+      </div>
+      <p class="small">Paste JSON array of players {name,ovr,pos,club,league,nation, type?/tier?, value?}</p>
+      <textarea id="importTxt" placeholder='[{"name":"John Doe","ovr":78,"pos":"CM","club":"FC Demo","league":"Premier League","nation":"England"}]'></textarea>
+      <div class="row">
+        <button class="btn primary" onclick="importPlayers()">Import to League</button>
+        <button class="btn ghost" onclick="seedFS()">Seed Future Stars (demo)</button>
+      </div>
+      <hr style="border-color:rgba(255,255,255,.08)">
+      <h4>Economy tuning</h4>
+      <div class="row small">
+        Quick‑sell scale: <input id="econ" type="range" min="0.5" max="2" step="0.05" value="1" oninput="setEcon(this.value)">
+        <span id="econVal" style="margin-left:6px">× 1.00</span>
+      </div>
+    </div>
+    <div id="admin-packs" style="display:none">
+      <h4>Packs (publish to store)</h4>
+      <div class="small">Set <b>source</b> to a card type (gold, silver, icon, hero, fs, toty, tots, …) <i>or</i> to a league name (e.g., Premier League) to lock pulls to that league.</div>
+      <div id="packsTable"></div>
+      <button class="btn" onclick="addPack()">Add Pack</button>
+      <button class="btn primary" onclick="savePacks()">Save Packs</button>
+    </div>
+    <div id="admin-cards" style="display:none">
+      <h4>Card Types</h4>
+      <div id="cardTable"></div>
+      <button class="btn" onclick="addCardType()">Add Type</button>
+      <button class="btn primary" onclick="saveCardTypes()">Save</button>
+    </div>
+    <div id="admin-sim" style="display:none">
+      <h4>Match Simulator rewards</h4>
+      <div class="row small">
+        Win: <input id="simWin" type="number" value="7500" class="btn ghost" style="width:120px">
+        Draw: <input id="simDraw" type="number" value="2500" class="btn ghost" style="width:120px">
+        Loss: <input id="simLoss" type="number" value="500" class="btn ghost" style="width:120px">
+        <button class="btn primary" onclick="saveSim()">Save</button>
+        <button class="btn" onclick="playMatch()">Simulate now</button>
+      </div>
+      <p class="small" id="simMsg"></p>
+    </div>
+    <div id="admin-save" style="display:none">
+      <h4>Save management</h4>
+      <div class="row">
+        <button class="btn" onclick="exportSave()">Export Save</button>
+        <button class="btn" onclick="importSavePrompt()">Import Save</button>
+        <button class="btn bad" onclick="hardReset()">Hard Reset</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reveal overlay -->
+  <div id="ov" class="overlay">
+    <button class="btn closeX" onclick="closeReveal()">Close</button>
+    <div id="flash" class="flash"></div>
+    <div class="reveal">
+      <h4 id="revealTitle">You opened</h4>
+      <div id="revealList"></div>
+    </div>
+  </div>
+
+  <!-- Detail modal -->
+  <div class="modal" id="modal">
+    <div class="sheet">
+      <div class="row head">
+        <div class="big" id="m-ovr">90</div>
+        <div>
+          <div id="m-name" style="font-weight:800;font-size:20px">Player Name</div>
+          <div class="small"><span id="m-pos"></span> • <span id="m-club"></span> • <span id="m-league"></span> • <span id="m-nation"></span></div>
+        </div>
+        <div class="qs" id="m-value"></div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn bad" id="m-sell">Quick Sell</button>
+        <button class="btn" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="btn" onclick="go('home')">Home</button>
+    <button class="btn" onclick="go('store')">Store</button>
+    <button class="btn" onclick="go('club')">Club</button>
+    <button class="btn" onclick="go('sbc')">SBC</button>
+    <button class="btn" onclick="go('info')">Info</button>
+  </div>
+</div>
+
+<script>
+const S={coins:580000,club:[],myPacks:[],lastGift:0,econ:1,sim:{win:7500,draw:2500,loss:500},packs:[],cards:[],leagues:{}};
+const EL=id=>document.getElementById(id);
+const FLAGS={"England":"🏴","Spain":"🇪🇸","France":"🇫🇷","Germany":"🇩🇪","Italy":"🇮🇹","Portugal":"🇵🇹","Argentina":"🇦🇷","Brazil":"🇧🇷","Netherlands":"🇳🇱","Belgium":"🇧🇪","Wales":"🏴","USA":"🇺🇸","Saudi Arabia":"🇸🇦"};
+const STADIUM="🏟️"; const fmt=n=>n.toLocaleString(); const pick=a=>a[Math.floor(Math.random()*a.length)];
+function save(){localStorage.setItem('tfa_pro',JSON.stringify(S))} function load(){try{Object.assign(S,JSON.parse(localStorage.getItem('tfa_pro')||'{}'))}catch(e){}}
+function qsValue(p){let o=p.ovr||p.rating||75,b=0;if(o<=64)b=100;else if(o<=74)b=200;else if(o<=79)b=350;else if(o<=82)b=750;else if(o<=84)b=2000;else if(o==85)b=2500;else if(o==86)b=3000;else if(o==87)b=5000;else if(o==88)b=8000;else if(o==89)b=12000;else if(o==90)b=18000;else if(o==91)b=25000;else if(o==92)b=30000;else if(o==93)b=50000;else if(o==94)b=75000;else if(o==95)b=90000;else if(o==96)b=100000;else if(o==97)b=200000;else if(o>=98)b=250000;if((p.tier||'').toLowerCase()==='icon')b*=2.2;if((p.tier||'').toLowerCase()==='hero')b*=1.6;if((p.type||'').toUpperCase()==='FS')b*=1.3;return Math.round(b*S.econ)}
+function seedCards(){S.cards=[
+  {key:'bronze',title:'Bronze',flash:'#a87a55'},{key:'silver',title:'Silver',flash:'#b9c7d6'},{key:'gold',title:'Gold',flash:'#ffd257'},
+  {key:'hero',title:'Hero',flash:'#ff3b6a'},{key:'icon',title:'Icon',flash:'#f7f3e8'},{key:'fs',title:'Future Stars',flash:'#6a2cff'},
+  {key:'toty',title:'TOTY',flash:'#2b5bff'},{key:'tots',title:'TOTS',flash:'#00c8a3'},
+  {key:'ultimate',title:'Ultimate Player',flash:'#ff8c2b'},{key:'ballondor',title:"Ballon d'Or",flash:'#ffe08a'},
+  {key:'legend',title:'Legend',flash:'#f0f0f0'},{key:'gotg',title:'GOTG',flash:'#db7cff'},
+  {key:'wcw',title:'World Cup Winner',flash:'#00b894'},{key:'ucl',title:'UCL',flash:'#0a84ff'},{key:'eul',title:'EUL',flash:'#ff7a00'},
+  {key:'champions',title:'Champions League',flash:'#0a84ff'}
+]}
+function seedPacks(){
+  S.packs=[
+    {key:'bronze',title:'Bronze (5)',price:500,min:50,max:64,cards:5,rare:1,common:4,source:'bronze'},
+    {key:'silver',title:'Silver (5)',price:2500,min:65,max:74,cards:5,rare:2,common:3,source:'silver'},
+    {key:'gold',title:'Gold (5)',price:6500,min:75,max:83,cards:5,rare:2,common:3,source:'gold'},
+    {key:'prem_gold',title:'Premium Gold (5)',price:9000,min:76,max:83,cards:5,rare:3,common:2,source:'gold'},
+    // Specials (guaranteed type)
+    {key:'hero',title:'Hero (5)',price:280000,min:85,max:96,cards:5,rare:5,common:0,source:'hero'},
+    {key:'icon',title:'Icon (5)',price:450000,min:88,max:99,cards:5,rare:5,common:0,source:'icon'},
+    {key:'fs',title:'Future Stars (5)',price:100000,min:86,max:94,cards:5,rare:5,common:0,source:'fs'},
+    {key:'toty',title:'TOTY (5)',price:900000,min:94,max:99,cards:5,rare:5,common:0,source:'toty'},
+    {key:'tots',title:'TOTS (5)',price:420000,min:90,max:97,cards:5,rare:5,common:0,source:'tots'},
+    {key:'ultimate_player',title:'Ultimate Player (5)',price:950000,min:95,max:99,cards:5,rare:5,common:0,source:'ultimate'},
+    {key:'ballondor',title:"Ballon d'Or (5)",price:900000,min:94,max:99,cards:5,rare:5,common:0,source:'ballondor'},
+    {key:'legend',title:'Legend (5)',price:520000,min:90,max:97,cards:5,rare:5,common:0,source:'legend'},
+    {key:'gotg',title:'GOTG (5)',price:520000,min:90,max:97,cards:5,rare:5,common:0,source:'gotg'},
+    {key:'wcw',title:'World Cup Winner (5)',price:650000,min:92,max:99,cards:5,rare:5,common:0,source:'wcw'},
+    {key:'ucl',title:'UCL (5)',price:220000,min:84,max:93,cards:5,rare:5,common:0,source:'ucl'},
+    {key:'eul',title:'EUL (5)',price:160000,min:82,max:90,cards:5,rare:5,common:0,source:'eul'},
+  ];
+  // League-locked (guaranteed league pulls)
+  const leagues=["Premier League","La Liga","Ligue 1","Serie A TIM","Bundesliga","Saudi Pro League","MLS","Championship"];
+  leagues.forEach(L=>{
+    S.packs.push({key:`${slug(L)}_bronze`,title:`${L} Bronze (5)`,price:600,min:50,max:64,cards:5,rare:1,common:4,source:L});
+    S.packs.push({key:`${slug(L)}_silver`,title:`${L} Silver (5)`,price:2800,min:65,max:74,cards:5,rare:2,common:3,source:L});
+    S.packs.push({key:`${slug(L)}_gold`,title:`${L} Gold (5)`,price:7500,min:75,max:83,cards:5,rare:2,common:3,source:L});
+  });
+}
+function seedLeagues(){
+  const leagues=["Premier League","La Liga","Ligue 1","Serie A TIM","Bundesliga","Saudi Pro League","MLS","Championship"];
+  const pos=["GK","RB","LB","CB","CM","CDM","CAM","LW","RW","ST"];
+  const nations={"Premier League":["England","Brazil","France","Portugal","Netherlands"],"La Liga":["Spain","France","Brazil","Germany"],"Ligue 1":["France","Brazil","Argentina","Portugal"],"Serie A TIM":["Italy","France","Brazil","Argentina"],"Bundesliga":["Germany","France","Spain","Netherlands"],"Saudi Pro League":["Saudi Arabia","Brazil","Portugal"],"MLS":["USA","Argentina","Brazil"],"Championship":["England","Wales","USA"]};
+  leagues.forEach(L=>{
+    const arr=[]; // 5 of each base rarity range
+    arr.push(...mkPlayers(L,nations[L]||["England"],"Bronze",50,64,5));
+    arr.push(...mkPlayers(L,nations[L]||["England"],"Silver",65,74,5));
+    arr.push(...mkPlayers(L,nations[L]||["England"],"Gold",75,83,5));
+    S.leagues[L]=arr;
+  });
+  // Specials pools (5 each)
+  S.leagues["Icons"]=mkSpecial('icon',5,90,97);
+  S.leagues["Heroes"]=mkSpecial('hero',5,86,92);
+  S.leagues["Future Stars"]=mkSpecial('FS',5,86,93);
+  S.leagues["TOTY"]=mkSpecial('TOTY',5,94,99);
+  S.leagues["TOTS"]=mkSpecial('TOTS',5,90,97);
+  S.leagues["Ultimate"]=mkSpecial('ULTIMATE',5,95,99);
+  S.leagues["Ballon d'Or"]=mkSpecial('BALLONDOR',5,94,99);
+  S.leagues["Legend"]=mkSpecial('LEGEND',5,90,97);
+  S.leagues["GOTG"]=mkSpecial('GOTG',5,90,97);
+  S.leagues["World Cup Winner"]=mkSpecial('WCW',5,92,99);
+  S.leagues["UCL"]=mkSpecial('UCL',5,84,93);
+  S.leagues["EUL"]=mkSpecial('EUL',5,82,90);
+}
+function mkPlayers(league,nations,label,min,max,count){
+  const pos=["GK","RB","LB","CB","CM","CDM","CAM","LW","RW","ST"];
+  const clubs = ["United","City","FC","Sporting","Athletic","Rovers","Wanderers","SC"].map(s=>`${short(league)} ${s}`);
+  const out=[]; for(let i=1;i<=count;i++){const o=rand(min,max);out.push({name:`${short(league)} ${label} ${i}`,ovr:o,pos:pick(pos),club:pick(clubs),league:league,nation:pick(nations)})} return out;
+}
+function mkSpecial(tag,count,min,max){
+  const pos=["GK","RB","LB","CB","CM","CDM","CAM","LW","RW","ST"]; const out=[];
+  for(let i=1;i<=count;i++){const o=rand(min,max);const lower=tag.toLowerCase();out.push({name:`${tag} Star ${i}`,ovr:o,pos:pick(pos),club:"Special XI",league:prettyTag(lower),nation:pick(["England","Spain","France","Brazil","Germany","Italy","Portugal","Argentina"]),type:tag,tier:(lower==='icon'||lower==='hero')?lower:undefined})}
+  return out;
+}
+function prettyTag(t){const map={fs:"Future Stars",toty:"TOTY",tots:"TOTS",ultimate:"Ultimate Player",ballondor:"Ballon d'Or",legend:"Legend",gotg:"GOTG",wcw:"World Cup Winner",ucl:"UCL",eul:"EUL"};return map[t]||t.toUpperCase()}
+function short(l){const m={"Premier League":"PL","La Liga":"LL","Ligue 1":"L1","Serie A TIM":"SA","Bundesliga":"BL","Saudi Pro League":"SPL","MLS":"MLS","Championship":"EFL"};return m[l]||l}
+function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a} function slug(s){return s.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'')}
+function go(v){['store','club','sbc','info'].forEach(id=>EL(id).style.display='none'); if(v==='home'){window.scrollTo({top:0,behavior:'smooth'});return} EL(v).style.display='block'; window.scrollTo({top:EL(v).offsetTop-8,behavior:'smooth'})}
+function switchStore(w){EL('tab-store').classList.toggle('active',w==='store');EL('tab-mine').classList.toggle('active',w==='mine');EL('storeList').style.display=w==='store'?'grid':'none';EL('mineList').style.display=w==='mine'?'grid':'none'}
+function renderCoins(){EL('coins').textContent=fmt(S.coins)}
+function flash(c){const f=EL('flash');f.style.background=c;f.classList.add('show');setTimeout(()=>f.classList.remove('show'),280)}
+function renderStore(){const wrap=EL('storeList');wrap.innerHTML='';S.packs.forEach(p=>{const row=document.createElement('div');row.className='pack';row.innerHTML=`
+  <div class="pill">${p.title}</div>
+  <div class="small">${p.cards} cards • ${p.min}–${p.max} OVR • Source: <b>${p.source}</b></div>
+  <div><div class="price">${fmt(p.price)}</div><button class="buy">Buy</button></div>`; row.querySelector('.buy').onclick=()=>buyPack(p);wrap.appendChild(row)})}
+function renderMine(){const m=EL('mineList');m.innerHTML='';EL('myCount').textContent=S.myPacks.length;S.myPacks.forEach((pack,i)=>{const row=document.createElement('div');row.className='pack';row.innerHTML=`<div class="pill">${pack.title}</div><div class="small">Ready to open</div><div><button class="buy">Open</button></div>`;row.querySelector('.buy').onclick=()=>openPack(pack,i,true);m.appendChild(row)})}
+function renderClub(){const c=EL('clubList');c.innerHTML='';S.club.slice().reverse().forEach((p,idx)=>{const div=document.createElement('div');div.className='card '+rarityClass(p);div.innerHTML=`
+  <div class="row"><div class="ovr">${p.ovr||p.rating}</div>
+  <div><div style="font-weight:800">${p.name}${p.type?` <span class="badge">${p.type}</span>`:''}${p.tier?` <span class="badge">${p.tier}</span>`:''}</div>
+  <div class="small">${p.pos} • ${p.club} ${STADIUM} • ${p.league} • ${(FLAGS[p.nation]||'')} ${p.nation}</div></div>
+  <div class="qs"><button class="btn bad">Quick Sell ${fmt(qsValue(p))}</button></div></div>`;
+  div.querySelector('.btn').onclick=(e)=>{e.stopPropagation();quickSellIdx(S.club.length-1-idx)}; div.onclick=()=>showDetail(S.club.length-1-idx); c.appendChild(div)})}
+function renderSBC(){const defs=[{need:80,reward:'gold'},{need:85,reward:'fs'},{need:88,reward:'icon'}];const list=EL('sbcList');list.innerHTML='';defs.forEach(d=>{const row=document.createElement('div');row.className='pack';row.innerHTML=`<div class="pill">11 × ${d.need}+</div><div class="small">Auto-fill. Reward → My Packs.</div><div><button class="buy">Complete</button></div>`;row.querySelector('.buy').onclick=()=>doSBC(d.need,d.reward);list.appendChild(row)})}
+function rarityClass(p){if((p.tier||'').toLowerCase()==='icon')return'r-icon';if((p.tier||'').toLowerCase()==='hero')return'r-hero';const t=(p.type||'').toUpperCase();if(t==='FS'||t==='TOTY')return'r-toty';if(t==='TOTS')return'r-tots';const o=p.ovr||p.rating; if(o<=64)return'r-bronze';if(o<=74)return'r-silver';if(o<=83)return'r-gold';return'r-tots'}
+function buyPack(p){if(S.coins<p.price){alert('Not enough coins.');return}S.coins-=p.price;save();renderCoins();openPack(p,null,false)}
+function poolForSource(pack){const out=[];const src=(pack.source||'all').toLowerCase();Object.values(S.leagues).forEach(list=>list.forEach(pl=>{const o=pl.ovr||pl.rating||0;const type=(pl.type||pl.tier||'').toString().toLowerCase();const league=pl.league||'';const match = src==='all' || type===src || league===pack.source || (src==='gold'&&o>=75&&o<=83&&!pl.type&&!pl.tier) || (src==='silver'&&o>=65&&o<=74&&!pl.type&&!pl.tier) || (src==='bronze'&&o<=64&&!pl.type&&!pl.tier); if(match) out.push(pl)})); return out}
+function openPack(pack,idxFromQueue,fromQueue){const pool=poolForSource(pack).filter(p=>(p.ovr||p.rating)>=pack.min&&(p.ovr||p.rating)<=pack.max); if(!pool.length){alert('No players for this source/range. Add some in Info/Admin.');return} const cards=[]; for(let i=0;i<pack.cards;i++){cards.push(JSON.parse(JSON.stringify(pick(pool))))} cards.forEach(c=>S.club.push(c)); save(); renderClub(); if(fromQueue){S.myPacks.splice(idxFromQueue,1);save();renderMine()} const best=cards.reduce((a,b)=>((b.ovr||b.rating)>(a.ovr||a.rating)?b:a),cards[0]); flash(flashColor(best)); showReveal(pack,cards)}
+function flashColor(p){const t=(p.type||'').toUpperCase(), tr=(p.tier||'').toLowerCase(); if(tr==='icon')return'linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,215,130,.85))'; if(tr==='hero')return'linear-gradient(180deg,#ff3b6a,#ff9ab1)'; if(t==='FS')return'linear-gradient(180deg,#6a2cff,#9b7cff)'; if(t==='TOTY')return'linear-gradient(180deg,#2b5bff,#7ea3ff)'; if(t==='TOTS')return'linear-gradient(180deg,#00c8a3,#72f5dc)'; const o=p.ovr||p.rating; if(o<=64)return'linear-gradient(180deg,#a87a55,#c9a07b)'; if(o<=74)return'linear-gradient(180deg,#b9c7d6,#dfe8f1)'; if(o<=83)return'linear-gradient(180deg,#ffd257,#ffe7a7)'; return'linear-gradient(180deg,#00c8a3,#72f5dc)'}
+function showReveal(pack,cards){EL('revealTitle').textContent=`You opened: ${pack.title}`;const list=EL('revealList');list.innerHTML='';cards.forEach((p,idx)=>{const val=qsValue(p);const div=document.createElement('div');div.className='card '+rarityClass(p);div.innerHTML=`<div class="row"><div class="ovr">${p.ovr||p.rating}</div><div><div style="font-weight:800">${p.name}${p.type?` <span class="badge">${p.type}</span>`:''}${p.tier?` <span class="badge">${p.tier}</span>`:''}</div><div class="small">${p.pos} • ${p.club} ${STADIUM} • ${p.league} • ${FLAGS[p.nation]||''} ${p.nation}</div></div><div class="qs"><button class="btn bad">Quick Sell ${fmt(val)}</button></div></div>`; div.querySelector('.btn').onclick=(e)=>{e.stopPropagation();quickSellIdx(S.club.length-cards.length+idx)}; div.onclick=()=>showDetail(S.club.length-cards.length+idx); list.appendChild(div)}); EL('ov').classList.add('show')}
+function closeReveal(){EL('ov').classList.remove('show');renderCoins();renderClub()}
+function showDetail(idx){const p=S.club[idx];EL('m-ovr').textContent=p.ovr||p.rating;EL('m-name').textContent=p.name+(p.type?` (${p.type})`:'')+(p.tier?` (${p.tier})`:'');EL('m-pos').textContent=p.pos;EL('m-club').textContent=`${p.club} ${STADIUM}`;EL('m-league').textContent=p.league;EL('m-nation').textContent=`${FLAGS[p.nation]||''} ${p.nation}`;EL('m-value').textContent='Quick sell '+fmt(qsValue(p));EL('m-sell').onclick=()=>{quickSellIdx(idx);closeModal()};EL('modal').classList.add('show')}
+function closeModal(){EL('modal').classList.remove('show');renderCoins();renderClub()}
+function quickSellIdx(idx){const p=S.club[idx];S.coins+=qsValue(p);S.club.splice(idx,1);save();renderCoins();renderClub()}
+function doSBC(min,rewardKey){const picked=[];for(let i=0;i<S.club.length;i++){const o=S.club[i].ovr||S.club[i].rating;if(o>=min)picked.push(i);if(picked.length===11)break} if(picked.length<11){alert('Not enough players.');return} picked.reverse().forEach(i=>S.club.splice(i,1));const pack=S.packs.find(p=>p.key===rewardKey); if(pack)S.myPacks.push(pack); save();renderMine();renderClub();alert('SBC submitted. Reward → My Packs.')}
+function adminTab(w){['admin-leagues','admin-packs','admin-cards','admin-sim','admin-save'].forEach(id=>EL(id).style.display='none');EL('admin-'+w).style.display='block'}
+function rebuildLeagueSel(){const sel=EL('leagueSel');sel.innerHTML='';Object.keys(S.leagues).sort().forEach(l=>{const o=document.createElement('option');o.value=l;o.textContent=l;sel.appendChild(o)})}
+function addLeaguePrompt(){const name=prompt('New league name?');if(!name)return;if(!S.leagues[name])S.leagues[name]=[];save();rebuildLeagueSel();alert('League added.')}
+function importPlayers(){try{const arr=JSON.parse(EL('importTxt').value);const league=EL('leagueSel').value||'Premier League';if(!S.leagues[league])S.leagues[league]=[];arr.forEach(p=>{if(!p.league)p.league=league;S.leagues[league].push(p)});save();alert(`Imported ${arr.length} to ${league}.`)}catch(e){alert('Invalid JSON.')}}
+function exportLeague(){const league=EL('leagueSel').value;const data=JSON.stringify(S.leagues[league]||[],null,2);navigator.clipboard.writeText(data).then(()=>alert('Copied.'))}
+function packsTableHtml(){const cols=['key','title','price','min','max','cards','rare','common','source'];let html='<table><tr>'+cols.map(c=>`<th>${c}</th>`).join('')+'<th></th></tr>';S.packs.forEach((p,i)=>{html+='<tr>'+cols.map(c=>`<td contenteditable oninput="editPack(${i},'${c}',this.textContent)">${p[c]??''}</td>`).join('')+`<td><button class="btn bad" onclick="delPack(${i})">Del</button></td></tr>`});html+='</table>';return html}
+function renderPacksTable(){EL('packsTable').innerHTML=packsTableHtml()}
+function editPack(i,k,v){let x=v.trim();if(['price','min','max','cards','rare','common'].includes(k))x=Number(x);S.packs[i][k]=x}
+function addPack(){S.packs.push({key:'new_pack',title:'New Pack',price:1000,min:50,max:99,cards:5,rare:2,common:3,source:'all'});renderPacksTable()}
+function delPack(i){S.packs.splice(i,1);renderPacksTable()}
+function savePacks(){save();renderStore();alert('Packs saved.')}
+function cardTableHtml(){const cols=['key','title','flash'];let html='<table><tr>'+cols.map(c=>`<th>${c}</th>`).join('')+'<th></th></tr>';S.cards.forEach((c,i)=>{html+='<tr>'+cols.map(k=>`<td contenteditable oninput="editCard(${i},'${k}',this.textContent)">${c[k]}</td>`).join('')+`<td><button class="btn bad" onclick="delCard(${i})">Del</button></td></tr>`});html+='</table>';return html}
+function renderCardTable(){EL('cardTable').innerHTML=cardTableHtml()}
+function editCard(i,k,v){S.cards[i][k]=v.trim()} function addCardType(){S.cards.push({key:'new',title:'New',flash:'#ffffff'});renderCardTable()} function delCard(i){S.cards.splice(i,1);renderCardTable()} function saveCardTypes(){save();alert('Card types saved.')}
+function saveSim(){S.sim.win=Number(EL('simWin').value)||7500;S.sim.draw=Number(EL('simDraw').value)||2500;S.sim.loss=Number(EL('simLoss').value)||500;save();EL('simMsg').textContent='Saved.'}
+function playMatch(){const r=Math.random();let out='Loss',delta=S.sim.loss;if(r>0.7){out='Win';delta=S.sim.win}else if(r>0.45){out='Draw';delta=S.sim.draw}S.coins+=delta;save();renderCoins();EL('simMsg').textContent=`Match result: ${out}. You earned ${fmt(delta)} coins.`}
+EL('gift').onclick=()=>{const now=Date.now();if(now-S.lastGift<20*60*60*1000){alert('Come back later for your next gift.');return}S.lastGift=now;S.coins+=100000;save();renderCoins()}
+EL('profileBtn').onclick=()=>{alert(`Coins: ${fmt(S.coins)}\nClub size: ${S.club.length}\nPacks in queue: ${S.myPacks.length}`)}
+function setEcon(v){S.econ=Number(v);EL('econVal').textContent='× '+S.econ.toFixed(2);save();renderClub()}
+function exportSave(){const data=JSON.stringify(S);navigator.clipboard.writeText(data).then(()=>alert('Save copied.'))}
+function importSavePrompt(){const raw=prompt('Paste save JSON');if(!raw)return;try{Object.assign(S,JSON.parse(raw));save();initRenders();alert('Imported.')}catch(e){alert('Invalid JSON.')}}
+function hardReset(){if(!confirm('Reset all local progress?'))return;localStorage.removeItem('tfa_pro');location.reload()}
+function initRenders(){renderCoins();renderStore();renderMine();renderClub();renderSBC();renderPacksTable();renderCardTable();rebuildLeagueSel()}
+function init(){load();if(!S.packs.length)seedPacks();if(!S.cards.length)seedCards();if(!Object.keys(S.leagues).length)seedLeagues();initRenders();EL('econ').value=S.econ;EL('econVal').textContent='× '+S.econ.toFixed(2)}
+init();
+</script>
+</body>
+</html>
