@@ -115,10 +115,23 @@ body{margin:0;font-family:'Outfit',system-ui,Segoe UI,Roboto,Helvetica,Arial;bac
   </section>
 
   <!-- CLUB -->
-  <section id="club" style="display:none">
-    <div class="tabs"><div class="tab active">My Club</div></div>
-    <div id="clubList" class="list"></div>
-  </section>
+<section id="club" style="display:none">
+  <div class="tabs"><div class="tab active">My Club</div></div>
+
+  <!-- Search + Sort controls -->
+  <div class="row" style="gap:10px; margin:8px 0 12px">
+    <input id="clubSearch" class="btn ghost" style="flex:1; min-width:200px"
+           placeholder="Search name, club, nation, type (icon/hero/fs)…">
+    <select id="clubSort" class="btn ghost" style="min-width:190px">
+      <option value="ovr_desc">Sort: Rating high → low</option>
+      <option value="ovr_asc">Sort: Rating low → high</option>
+      <option value="name_asc">Sort: Name A → Z</option>
+      <option value="club_asc">Sort: Club A → Z</option>
+    </select>
+  </div>
+
+  <div id="clubList" class="list"></div>
+</section>
 
   <!-- SBC -->
   <section id="sbc" style="display:none">
@@ -316,12 +329,64 @@ function renderStore(){const wrap=EL('storeList');wrap.innerHTML='';S.packs.forE
   <div class="small">${p.cards} cards • ${p.min}–${p.max} OVR • Source: <b>${p.source}</b></div>
   <div><div class="price">${fmt(p.price)}</div><button class="buy">Buy</button></div>`; row.querySelector('.buy').onclick=()=>buyPack(p);wrap.appendChild(row)})}
 function renderMine(){const m=EL('mineList');m.innerHTML='';EL('myCount').textContent=S.myPacks.length;S.myPacks.forEach((pack,i)=>{const row=document.createElement('div');row.className='pack';row.innerHTML=`<div class="pill">${pack.title}</div><div class="small">Ready to open</div><div><button class="buy">Open</button></div>`;row.querySelector('.buy').onclick=()=>openPack(pack,i,true);m.appendChild(row)})}
-function renderClub(){const c=EL('clubList');c.innerHTML='';S.club.slice().reverse().forEach((p,idx)=>{const div=document.createElement('div');div.className='card '+rarityClass(p);div.innerHTML=`
-  <div class="row"><div class="ovr">${p.ovr||p.rating}</div>
-  <div><div style="font-weight:800">${p.name}${p.type?` <span class="badge">${p.type}</span>`:''}${p.tier?` <span class="badge">${p.tier}</span>`:''}</div>
-  <div class="small">${p.pos} • ${p.club} ${STADIUM} • ${p.league} • ${(FLAGS[p.nation]||'')} ${p.nation}</div></div>
-  <div class="qs"><button class="btn bad">Quick Sell ${fmt(qsValue(p))}</button></div></div>`;
-  div.querySelector('.btn').onclick=(e)=>{e.stopPropagation();quickSellIdx(S.club.length-1-idx)}; div.onclick=()=>showDetail(S.club.length-1-idx); c.appendChild(div)})}
+function renderClub(){
+  const c = EL('clubList');
+  const q = (EL('clubSearch')?.value || '').trim().toLowerCase();
+  const sort = (EL('clubSort')?.value || 'ovr_desc');
+
+  // keep original indices so QS / detail work
+  const rows = S.club.map((p, i) => ({...p, __i:i}));
+
+  // filter by name / club / nation / card type (type or tier)
+  const filtered = rows.filter(p => {
+    if (!q) return true;
+    const t = (p.type || p.tier || '').toLowerCase();
+    return (p.name||'').toLowerCase().includes(q)
+        || (p.club||'').toLowerCase().includes(q)
+        || (p.nation||'').toLowerCase().includes(q)
+        || t.includes(q);
+  });
+
+  // sort
+  filtered.sort((a,b)=>{
+    const ra=(a.ovr||a.rating||0), rb=(b.ovr||b.rating||0);
+    switch (sort){
+      case 'ovr_asc':  return ra - rb;
+      case 'name_asc': return (a.name||'').localeCompare(b.name||'');
+      case 'club_asc': return (a.club||'').localeCompare(b.club||'');
+      default:         return rb - ra; // ovr_desc
+    }
+  });
+
+  // render
+  c.innerHTML = '';
+  filtered.forEach(p=>{
+    const div = document.createElement('div');
+    div.className = 'card ' + rarityClass(p);
+    div.innerHTML = `
+      <div class="row">
+        <div class="ovr">${p.ovr||p.rating}</div>
+        <div>
+          <div style="font-weight:800">
+            ${p.name}
+            ${p.type?` <span class="badge">${p.type}</span>`:''}
+            ${p.tier?` <span class="badge">${p.tier}</span>`:''}
+          </div>
+          <div class="small">
+            ${p.pos} • ${p.club} ${STADIUM} • ${p.league} • ${(FLAGS[p.nation]||'')} ${p.nation}
+          </div>
+        </div>
+        <div class="qs"><button class="btn bad">Quick Sell ${fmt(qsValue(p))}</button></div>
+      </div>`;
+    div.querySelector('.btn').onclick=(e)=>{ e.stopPropagation(); quickSellIdx(p.__i); };
+    div.onclick=()=>showDetail(p.__i);
+    c.appendChild(div);
+  });
+}
+
+// hook up the controls (put this once, e.g., near init())
+EL('clubSearch')?.addEventListener('input', renderClub);
+EL('clubSort')?.addEventListener('change', renderClub);
 function renderSBC(){const defs=[{need:80,reward:'gold'},{need:85,reward:'fs'},{need:88,reward:'icon'}];const list=EL('sbcList');list.innerHTML='';defs.forEach(d=>{const row=document.createElement('div');row.className='pack';row.innerHTML=`<div class="pill">11 × ${d.need}+</div><div class="small">Auto-fill. Reward → My Packs.</div><div><button class="buy">Complete</button></div>`;row.querySelector('.buy').onclick=()=>doSBC(d.need,d.reward);list.appendChild(row)})}
 function rarityClass(p){if((p.tier||'').toLowerCase()==='icon')return'r-icon';if((p.tier||'').toLowerCase()==='hero')return'r-hero';const t=(p.type||'').toUpperCase();if(t==='FS'||t==='TOTY')return'r-toty';if(t==='TOTS')return'r-tots';const o=p.ovr||p.rating; if(o<=64)return'r-bronze';if(o<=74)return'r-silver';if(o<=83)return'r-gold';return'r-tots'}
 function buyPack(p){if(S.coins<p.price){alert('Not enough coins.');return}S.coins-=p.price;save();renderCoins();openPack(p,null,false)}
