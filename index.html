@@ -129,7 +129,10 @@ body{margin:0;font-family:'Outfit',system-ui,Segoe UI,Roboto,Helvetica,Arial;bac
       <option value="club_asc">Sort: Club A → Z</option>
     </select>
   </div>
-
+<!-- Quick Sell All Button -->
+<div class="row" style="margin:10px 0;">
+  <button class="btn bad" onclick="quickSellAll()">Quick Sell All</button>
+</div>
   <div id="clubList" class="list"></div>
 </section>
 
@@ -383,7 +386,19 @@ function renderClub(){
     c.appendChild(div);
   });
 }
-
+function quickSellAll() {
+  if (!confirm("Are you sure you want to quick sell ALL players in your club?")) return;
+  let totalCoins = 0;
+  while (S.club.length > 0) {
+    const p = S.club.pop();
+    totalCoins += qsValue(p);
+  }
+  S.coins += totalCoins;
+  save();
+  renderCoins();
+  renderClub();
+  alert(`All players sold for ${fmt(totalCoins)} coins!`);
+}
 // hook up the controls (put this once, e.g., near init())
 EL('clubSearch')?.addEventListener('input', renderClub);
 EL('clubSort')?.addEventListener('change', renderClub);
