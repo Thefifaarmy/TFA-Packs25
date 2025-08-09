@@ -183,6 +183,18 @@ body{margin:0;font-family:'Outfit',system-ui,Segoe UI,Roboto,Helvetica,Arial;bac
       <button class="btn" onclick="addCardType()">Add Type</button>
       <button class="btn primary" onclick="saveCardTypes()">Save</button>
     </div>
+    <div class="tab" onclick="adminTab('sbcedit')">SBC Editor</div>
+    <!-- Admin: Custom SBC editor -->
+<div id="admin-sbcedit" style="display:none">
+  <h4>Custom SBCs</h4>
+  <div class="small">Define your own SBCs. “need” = minimum OVR, “count” = cards required.
+    Reward can be a <b>pack key</b> (e.g. gold, icon) or <b>coins</b>.</div>
+  <div id="sbcTable"></div>
+  <div class="row" style="margin-top:8px">
+    <button class="btn" onclick="addSBC()">Add SBC</button>
+    <button class="btn primary" onclick="saveSBC()">Save SBCs</button>
+  </div>
+</div>
     <div id="admin-sim" style="display:none">
       <h4>Match Simulator rewards</h4>
       <div class="row small">
@@ -242,7 +254,7 @@ body{margin:0;font-family:'Outfit',system-ui,Segoe UI,Roboto,Helvetica,Arial;bac
 </div>
 
 <script>
-const S={coins:580000,club:[],myPacks:[],lastGift:0,econ:1,sim:{win:7500,draw:2500,loss:500},packs:[],cards:[],leagues:{}};
+const S={coins:580000,club:[],myPacks:[],sbcDefs:[],lastGift:0,econ:1,sim:{win:7500,draw:2500,loss:500},packs:[],cards:[],leagues:{}};
 const EL=id=>document.getElementById(id);
 const FLAGS={"England":"🏴","Spain":"🇪🇸","France":"🇫🇷","Germany":"🇩🇪","Italy":"🇮🇹","Portugal":"🇵🇹","Argentina":"🇦🇷","Brazil":"🇧🇷","Netherlands":"🇳🇱","Belgium":"🇧🇪","Wales":"🏴","USA":"🇺🇸","Saudi Arabia":"🇸🇦"};
 const STADIUM="🏟️"; const fmt=n=>n.toLocaleString(); const pick=a=>a[Math.floor(Math.random()*a.length)];
