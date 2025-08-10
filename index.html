@@ -535,5 +535,169 @@ function initRenders(){renderCoins();renderStore();renderMine();renderClub();ren
 function init(){load();if(!S.packs.length)seedPacks();if(!S.cards.length)seedCards();if(!Object.keys(S.leagues).length)seedLeagues();initRenders();EL('econ').value=S.econ;EL('econVal').textContent='× '+S.econ.toFixed(2)}
 init();
 </script>
+<!-- =========================
+     PATCH: fixes + small features
+     ========================= -->
+<style>
+  /* [ADD] missing danger style so “Quick Sell All” isn’t grey */
+  .btn.bad { background: var(--danger); color: #fff; }
+  /* [ADD] simple table skin for admin tables (packs/types) */
+  #packsTable table, #cardTable table { width:100%; border-collapse:collapse; }
+  #packsTable th, #packsTable td, #cardTable th, #cardTable td {
+    border:1px solid rgba(255,255,255,.08); padding:8px; font-size:13px;
+  }
+</style>
+
+<script>
+/* [FIX] add missing seedFS() hook used in Admin > Leagues */
+function seedFS(){
+  const league = (document.getElementById('leagueSel')?.value) || 'Premier League';
+  if(!S.leagues[league]) S.leagues[league] = [];
+  const N = 12, POS = ["GK","RB","LB","CB","CM","CDM","CAM","LW","RW","ST"];
+  const NATIONS = ["England","Spain","France","Brazil","Germany","Italy","Portugal","Argentina","Netherlands","Belgium","USA"];
+  for(let i=1;i<=N;i++){
+    const ovr = Math.floor(Math.random()*(93-86+1))+86;
+    S.leagues[league].push({
+      name:`Future Star ${i}`, ovr, pos: POS[Math.floor(Math.random()*POS.length)],
+      club:"Academy XI", league, nation: NATIONS[Math.floor(Math.random()*NATIONS.length)],
+      type:"FS"
+    });
+  }
+  save(); alert(`Seeded ${N} Future Stars into ${league}.`);
+}
+
+/* [FIX] Admin tab “SBC Editor” never showed — include it + auto-jump to Info */
+(function(){
+  const original = window.adminTab;
+  window.adminTab = function(which){
+    ['leagues','packs','cards','sim','save','sbcedit']
+      .forEach(id => document.getElementById('admin-'+id).style.display = (id===which)?'block':'none');
+    // jump the viewport to Admin area so you don’t have to scroll manually
+    const info = document.getElementById('info');
+    if (info) window.scrollTo({top: info.offsetTop - 8, behavior: 'smooth'});
+  };
+})();
+
+/* [ADD] more Club sorts (nation) + keep your original behaviour intact */
+(function(){
+  // add Nation sort option if missing
+  const sortSel = document.getElementById('clubSort');
+  if (sortSel && ![...sortSel.options].some(o=>o.value==='nation_asc')) {
+    const opt = document.createElement('option');
+    opt.value = 'nation_asc'; opt.textContent = 'Sort: Nation A → Z';
+    sortSel.appendChild(opt);
+  }
+
+  const OLD_renderClub = window.renderClub;
+  window.renderClub = function(){
+    const c = document.getElementById('clubList');
+    const q = (document.getElementById('clubSearch')?.value || '').trim().toLowerCase();
+    const sort = (document.getElementById('clubSort')?.value || 'ovr_desc');
+
+    const rows = S.club.map((p, i) => Object.assign({__i:i}, p));
+    const filtered = rows.filter(p=>{
+      if (!q) return true;
+      const t = (p.type || p.tier || '').toLowerCase();
+      return (p.name||'').toLowerCase().includes(q)
+          || (p.club||'').toLowerCase().includes(q)
+          || (p.nation||'').toLowerCase().includes(q)
+          || t.includes(q);
+    });
+
+    filtered.sort((a,b)=>{
+      const ra=(a.ovr||a.rating||0), rb=(b.ovr||b.rating||0);
+      switch (sort){
+        case 'ovr_asc':  return ra - rb;
+        case 'name_asc': return (a.name||'').localeCompare(b.name||'');
+        case 'club_asc': return (a.club||'').localeCompare(b.club||'');
+        case 'nation_asc': return (a.nation||'').localeCompare(b.nation||'');
+        default:         return rb - ra; // ovr_desc
+      }
+    });
+
+    c.innerHTML = '';
+    filtered.forEach(p=>{
+      const div = document.createElement('div');
+      div.className = 'card ' + rarityClass(p);
+      const value = (window.qsValue ? qsValue(p) : 0);
+      div.innerHTML = `
+        <div class="row">
+          <div class="ovr">${p.ovr||p.rating}</div>
+          <div>
+            <div style="font-weight:800">
+              ${p.name}
+              ${p.type?` <span class="badge">${p.type}</span>`:''}
+              ${p.tier?` <span class="badge">${p.tier}</span>`:''}
+            </div>
+            <div class="small">
+              ${p.pos} • ${p.club} 🏟️ • ${p.league} • ${(FLAGS?.[p.nation]||'')} ${p.nation||''}
+            </div>
+          </div>
+          <div class="qs"><button class="btn bad">Quick Sell ${value.toLocaleString()}</button></div>
+        </div>`;
+      div.querySelector('.btn').addEventListener('click', (e)=>{ e.stopPropagation(); quickSellIdx(p.__i); });
+      div.addEventListener('click', ()=> showDetail(p.__i));
+      c.appendChild(div);
+    });
+  };
+})();
+
+/* [ADD] Pack overlay: “Send all to club” & “Quick sell all” for the current pack */
+(function(){
+  // keep track of indices from the last opened pack so QS-all works correctly
+  S.__lastRevealedIdx = [];
+
+  const OLD_showReveal = window.showReveal;
+  window.showReveal = function(pack, cards){
+    // compute indices of just-added cards
+    const start = S.club.length - cards.length;
+    S.__lastRevealedIdx = Array.from({length: cards.length}, (_,i)=> start + i);
+
+    // call your original renderer
+    OLD_showReveal(pack, cards);
+
+    // add footer actions ONLY if not already present
+    const list = document.getElementById('revealList');
+    if (!list) return;
+    let footer = document.getElementById('revealActions');
+    if (!footer){
+      footer = document.createElement('div');
+      footer.id = 'revealActions';
+      footer.className = 'nav';
+      footer.innerHTML = `
+        <button class="btn" id="sendAllBtn">Send all to club</button>
+        <button class="btn bad" id="qsAllBtn">Quick sell all</button>
+      `;
+      list.parentElement.appendChild(footer);
+    }
+    // bind clicks
+    document.getElementById('sendAllBtn').onclick = function(){
+      // they’re already in club by design — just close overlay
+      closeReveal();
+    };
+    document.getElementById('qsAllBtn').onclick = function(){
+      const idxs = (S.__lastRevealedIdx || []).slice().sort((a,b)=>b-a);
+      if (!idxs.length) return closeReveal();
+      let total = 0;
+      idxs.forEach(i => { const pl = S.club[i]; if (pl){ total += qsValue(pl); S.club.splice(i,1); } });
+      S.coins += total; save();
+      renderCoins(); renderClub();
+      alert(`Quick sold for ${total.toLocaleString()} coins.`);
+      closeReveal();
+    };
+  };
+})();
+
+/* [ADD] belt-and-braces event hooks (keeps your inline onclicks, but also works if removed) */
+document.addEventListener('DOMContentLoaded', ()=> {
+  const goIf = (id, target) => { const el = document.getElementById(id); if (el) el.addEventListener('click', ()=>go(target)); };
+  goIf('tab-store','store'); goIf('tab-mine','mine');
+  // ensure store tabs toggle lists on first load
+  if (typeof switchStore === 'function') switchStore('store');
+
+  // if leagues didn’t exist yet, refresh dropdown after seeds land
+  if (typeof rebuildLeagueSel === 'function') rebuildLeagueSel();
+});
+</script>
 </body>
 </html>
