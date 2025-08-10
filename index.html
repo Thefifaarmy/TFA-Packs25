@@ -225,7 +225,25 @@ body{margin:0;font-family:'Outfit',system-ui,Segoe UI,Roboto,Helvetica,Arial;bac
       <div id="revealList"></div>
     </div>
   </div>
-
+  <!-- Player Pick overlay -->
+<div id="pick" class="overlay">
+  <button class="btn closeX" onclick="closePick()">Close</button>
+  <div class="reveal">
+    <h4 id="pickTitle">Choose 1</h4>
+    <div id="pickList" class="list"></div>
+  </div>
+</div>
+<!-- Player Pick overlay -->
+<div id="pickOv" class="overlay">
+  <div class="reveal" style="max-width:920px">
+    <h4 id="pickTitle">Choose your player</h4>
+    <div id="pickGrid"></div>
+    <div class="row" style="margin-top:10px; gap:8px">
+      <button class="btn primary" id="pickConfirm">Confirm (0/0)</button>
+      <button class="btn" onclick="closePick()">Cancel</button>
+    </div>
+  </div>
+</div>
   <!-- Detail modal -->
   <div class="modal" id="modal">
     <div class="sheet">
@@ -421,7 +439,72 @@ function poolForSource(pack){const out=[];const src=(pack.source||'all').toLower
 function openPack(pack,idxFromQueue,fromQueue){const pool=poolForSource(pack).filter(p=>(p.ovr||p.rating)>=pack.min&&(p.ovr||p.rating)<=pack.max); if(!pool.length){alert('No players for this source/range. Add some in Info/Admin.');return} const cards=[]; for(let i=0;i<pack.cards;i++){cards.push(JSON.parse(JSON.stringify(pick(pool))))} cards.forEach(c=>S.club.push(c)); save(); renderClub(); if(fromQueue){S.myPacks.splice(idxFromQueue,1);save();renderMine()} const best=cards.reduce((a,b)=>((b.ovr||b.rating)>(a.ovr||a.rating)?b:a),cards[0]); flash(flashColor(best)); showReveal(pack,cards)}
 function flashColor(p){const t=(p.type||'').toUpperCase(), tr=(p.tier||'').toLowerCase(); if(tr==='icon')return'linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,215,130,.85))'; if(tr==='hero')return'linear-gradient(180deg,#ff3b6a,#ff9ab1)'; if(t==='FS')return'linear-gradient(180deg,#6a2cff,#9b7cff)'; if(t==='TOTY')return'linear-gradient(180deg,#2b5bff,#7ea3ff)'; if(t==='TOTS')return'linear-gradient(180deg,#00c8a3,#72f5dc)'; const o=p.ovr||p.rating; if(o<=64)return'linear-gradient(180deg,#a87a55,#c9a07b)'; if(o<=74)return'linear-gradient(180deg,#b9c7d6,#dfe8f1)'; if(o<=83)return'linear-gradient(180deg,#ffd257,#ffe7a7)'; return'linear-gradient(180deg,#00c8a3,#72f5dc)'}
 function showReveal(pack,cards){EL('revealTitle').textContent=`You opened: ${pack.title}`;const list=EL('revealList');list.innerHTML='';cards.forEach((p,idx)=>{const val=qsValue(p);const div=document.createElement('div');div.className='card '+rarityClass(p);div.innerHTML=`<div class="row"><div class="ovr">${p.ovr||p.rating}</div><div><div style="font-weight:800">${p.name}${p.type?` <span class="badge">${p.type}</span>`:''}${p.tier?` <span class="badge">${p.tier}</span>`:''}</div><div class="small">${p.pos} • ${p.club} ${STADIUM} • ${p.league} • ${FLAGS[p.nation]||''} ${p.nation}</div></div><div class="qs"><button class="btn bad">Quick Sell ${fmt(val)}</button></div></div>`; div.querySelector('.btn').onclick=(e)=>{e.stopPropagation();quickSellIdx(S.club.length-cards.length+idx)}; div.onclick=()=>showDetail(S.club.length-cards.length+idx); list.appendChild(div)}); EL('ov').classList.add('show')}
-function closeReveal(){EL('ov').classList.remove('show');renderCoins();renderClub()}
+/* ---------- Player Picks ---------- */
+function openPickPack(pack, idxFromQueue, fromQueue){
+  const pool = poolForSource(pack).filter(p => (p.ovr||p.rating) >= pack.min && (p.ovr||p.rating) <= pack.max);
+  if (!pool.length){ alert('No players for this source/range. Add some in Info/Admin.'); return; }
+
+  // make N unique choices
+  const n = Math.max(2, Number(pack.pick) || 3);
+  const choices = [];
+  const used = new Set();
+  while (choices.length < n && pool.length){
+    const c = JSON.parse(JSON.stringify(pick(pool)));
+    const key = c.name + '|' + (c.ovr||c.rating) + '|' + (c.club||'');
+    if (!used.has(key)){ used.add(key); choices.push(c); }
+  }
+
+  // remember context so we can finish later
+  S.__pickCtx = { packKey: pack.key, fromQueue, idxFromQueue };
+  renderPickChoices(pack, choices);
+}
+
+function renderPickChoices(pack, choices){
+  EL('pickTitle').textContent = `Choose 1 • ${pack.title}`;
+  const list = EL('pickList'); list.innerHTML = '';
+
+  choices.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'card ' + rarityClass(p);
+    div.style.cursor = 'pointer';
+    div.innerHTML = `
+      <div class="row">
+        <div class="ovr">${p.ovr || p.rating}</div>
+        <div>
+          <div style="font-weight:800">${p.name}${p.type?` <span class="badge">${p.type}</span>`:''}${p.tier?` <span class="badge">${p.tier}</span>`:''}</div>
+          <div class="small">${p.pos} • ${p.club} ${STADIUM} • ${p.league} • ${(FLAGS[p.nation]||'')} ${p.nation}</div>
+        </div>
+        <div class="qs"><button class="btn primary">Choose</button></div>
+      </div>`;
+    div.querySelector('.btn').onclick = (e)=>{ e.stopPropagation(); completePick(choices[i]); };
+    div.onclick = ()=> completePick(choices[i]);
+    list.appendChild(div);
+  });
+
+  EL('pick').classList.add('show');
+}
+
+function completePick(chosen){
+  // add chosen card to club
+  S.club.push(chosen);
+  save(); renderCoins(); renderClub();
+
+  // remove queued pack if it came from "My Packs"
+  const ctx = S.__pickCtx || {};
+  if (ctx.fromQueue){
+    S.myPacks.splice(ctx.idxFromQueue, 1);
+    save(); renderMine();
+  }
+  S.__pickCtx = null;
+  closePick();
+  // small flash based on chosen quality
+  flash(flashColor(chosen));
+}
+
+function closePick(){
+  EL('pick').classList.remove('show');
+}
+  function closeReveal(){EL('ov').classList.remove('show');renderCoins();renderClub()}
 function showDetail(idx){const p=S.club[idx];EL('m-ovr').textContent=p.ovr||p.rating;EL('m-name').textContent=p.name+(p.type?` (${p.type})`:'')+(p.tier?` (${p.tier})`:'');EL('m-pos').textContent=p.pos;EL('m-club').textContent=`${p.club} ${STADIUM}`;EL('m-league').textContent=p.league;EL('m-nation').textContent=`${FLAGS[p.nation]||''} ${p.nation}`;EL('m-value').textContent='Quick sell '+fmt(qsValue(p));EL('m-sell').onclick=()=>{quickSellIdx(idx);closeModal()};EL('modal').classList.add('show')}
 function closeModal(){EL('modal').classList.remove('show');renderCoins();renderClub()}
 function quickSellIdx(idx){const p=S.club[idx];S.coins+=qsValue(p);S.club.splice(idx,1);save();renderCoins();renderClub()}
